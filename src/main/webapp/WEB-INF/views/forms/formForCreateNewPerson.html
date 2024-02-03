@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>My app</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<h1>Добавление человека в базу данных</h1>
+
+<form th:method="POST" th:action="@{/people}" th:object="${person}">
+    <label for="name">Имя</label>
+    <input placeholder="Иван Иванов" type="text" th:field="*{name}" id="name"/>
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}">error</div>
+
+    <label for="data">Дата рождения</label>
+    <input placeholder="19.06.1999" type="text" th:field="*{dateOfBirth}" id="data"/>
+    <div th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}">error</div>
+
+    <input type="submit" value="Create">
+</form>
+</body>
+</html>
