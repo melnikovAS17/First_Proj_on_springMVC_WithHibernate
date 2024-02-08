@@ -22,7 +22,7 @@ public class MySpringValidatorPerson implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
     Person person = (Person) o;
-    if(personDAO.nameUniquePerson(person.getName()).isPresent())
-        errors.rejectValue("name","","this name already taken");
+    /*if(personDAO.nameUniquePerson(person.getName()).isPresent())
+        errors.rejectValue("name","","this name already taken");*/
     }
 }

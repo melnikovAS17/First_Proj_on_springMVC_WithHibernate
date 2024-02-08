@@ -1,54 +1,73 @@
 package ru.melnikov.projOnSpringMVC.DAO;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.melnikov.projOnSpringMVC.models.Book;
 import ru.melnikov.projOnSpringMVC.models.Person;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Component
 public class PersonDAO {
-    JdbcTemplate jdbcTemplate;
+    private final SessionFactory sessionFactory;
     @Autowired
-    public PersonDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public PersonDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
-
+    @Transactional(readOnly = true)
     public List<Person> showAllPerson(){
-        return jdbcTemplate.query("SELECT * FROM person", new BeanPropertyRowMapper<>(Person.class));
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("SELECT p from Person p", Person.class)
+                .getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Person showPersonInfo(int id){
-        return jdbcTemplate.query("SELECT * FROM person WHERE id = ?", new Object[]{id},
-                new BeanPropertyRowMapper<>(Person.class)).stream().findAny().orElse(null);
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Person.class,id);
     }
 
+    @Transactional
     public void savePerson (Person person){
-        jdbcTemplate.update("INSERT INTO person(name, dateofbirth) VALUES (?,?)", person.getName(),
-                person.getDateOfBirth());
+        Session session = sessionFactory.getCurrentSession();
+        session.save(person);
     }
 
+    @Transactional
     public void updatePerson (int id, Person person){
-        jdbcTemplate.update("UPDATE person SET name = ?, dateofbirth = ? WHERE id = ?",person.getName(),
-                person.getDateOfBirth(),id);
+        Session session = sessionFactory.getCurrentSession();
+        Person personToUpdate = session.get(Person.class,id);
+        personToUpdate.setName(person.getName());
+        personToUpdate.setDateOfBirth(person.getDateOfBirth());
+        personToUpdate.setBooks(person.getBooks());
+
     }
 
+    @Transactional
     public void deletePerson(int id){
-        jdbcTemplate.update("DELETE FROM person WHERE id = ?",id);
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.get(Person.class,id));
     }
 
     //Method validator name - unique
-    public Optional<Person> nameUniquePerson(String name){
+    //*************************Hibernate не может вернуть optional - советуют использовать DTO
+    /*public Optional<Person> nameUniquePerson(String name){
+        Session session = sessionFactory.getCurrentSession();
+        session.createQuery("select p from Person p where p.name = name")
         return jdbcTemplate.query("SELECT * FROM person WHERE name = ?", new Object[]{name},
                 new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
-    }
+    }*/
     //Метод проверяет читает ли данный человек книгу или нет
+    @Transactional(readOnly = true)
     public List<Book> checkOnIdPresent(int id){
-        return jdbcTemplate.query("SELECT * FROM books WHERE idperson=?",
-                        new Object[]{id},new BeanPropertyRowMapper<>(Book.class));
+        Session session = sessionFactory.getCurrentSession();
+        Person person = session.get(Person.class,id);
+
+        return person.getBooks();
     }
 }

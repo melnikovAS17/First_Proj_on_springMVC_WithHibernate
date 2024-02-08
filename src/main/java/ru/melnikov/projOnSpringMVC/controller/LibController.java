@@ -36,12 +36,12 @@ import java.util.Optional;
         public String showBookInfo(@PathVariable("id") int id, Model model,
                                    @ModelAttribute("person") Person person){
         model.addAttribute("book",libDAO.showBookInfo(id));
-            Optional<Person> idIsPresent = libDAO.checkOnIdPresent(id);
+            /*Optional<Person> idIsPresent = libDAO.checkOnIdPresent(id);*//*
             if(idIsPresent.isPresent()){
                 model.addAttribute("getName",idIsPresent.get().getName());
-            }else {
+            }else {*/
                 model.addAttribute("people",personDAO.showAllPerson());
-            }
+
             return "bookViews/showBookInfo";
         }
 

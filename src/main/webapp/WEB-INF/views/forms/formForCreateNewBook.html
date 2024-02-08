@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+    <meta charset="WIN1251">
     <title>My app</title>
     <style>
         body {
@@ -51,25 +51,25 @@
     </style>
 </head>
 <body>
-<h1>Р”РѕР±Р°РІР»РµРЅРёРµ РєРЅРёРіРё РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…</h1>
+<h1>Добавление книги в базу данных</h1>
 
 <form th:method="POST" th:action="@{/lib}" th:object="${book}">
-    <label for="title">РќР°Р·РІР°РЅРёРµ</label>
-    <input placeholder="РџСЂРµСЃС‚СѓРїР»РµРЅРёРµ Рё РЅР°РєР°Р·Р°РЅРёРµ" type="text" th:field="*{title}" id="title"/>
+    <label for="title">Название</label>
+    <input placeholder="Преступление и наказание" type="text" th:field="*{title}" id="title"/>
     <div th:if="${#fields.hasErrors('title')}" th:errors="*{title}">error</div>
     <br>
 
-    <label for="author">РђРІС‚РѕСЂ</label>
-    <input placeholder="Р¤С‘РґРѕСЂ Р”РѕСЃС‚РѕРµРІСЃРєРёР№" type="text" th:field="*{author}" id="author"/>
+    <label for="author">Автор</label>
+    <input placeholder="Фёдор Достоевский" type="text" th:field="*{author}" id="author"/>
     <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}">error</div>
     <br>
 
-    <label for="date">Р”Р°С‚Р° СЃРѕР·РґР°РЅРёСЏ</label>
+    <label for="date">Дата создания</label>
     <input placeholder="1866" type="text" th:field="*{date}" id="date"/>
     <div th:if="${#fields.hasErrors('date')}" th:errors="*{date}">error</div>
     <br>
 
-    <input type="submit" value="РЎРѕР·РґР°С‚СЊ">
+    <input type="submit" value="Создать">
 </form>
 
 </body>
