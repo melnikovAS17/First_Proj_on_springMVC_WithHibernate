@@ -1,10 +1,8 @@
 package ru.melnikov.projOnSpringMVC.DAO;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.melnikov.projOnSpringMVC.models.Book;
@@ -13,7 +11,7 @@ import ru.melnikov.projOnSpringMVC.models.Person;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+
 
 @Component
 public class LibDAO {
@@ -63,27 +61,36 @@ public class LibDAO {
     }*/
 
     //Метод проверяет читает книгу кто-то или нет(передаём в параметр id книги)
-    /*public Optional<Person> checkOnIdPresent(int id){
-        //из-за перестановки book.idperson = person.id - не работал корректно метод назначения книги читателю
-        //поменял местами, после чего поменял всё обратно - заработало!) (2 дня поиска проблемы)
-      return jdbcTemplate.query("SELECT person.* FROM books join person on person.id = books.idperson " +
-                              " where books.id =?",
-                      new Object[]{id},new BeanPropertyRowMapper<>(Person.class))
-              .stream().findAny();
-    }*/
+    @Transactional(readOnly = true)
+    public Person checkOnIdPresent(int id){
+        Session session = sessionFactory.getCurrentSession();
+        Book book = session.get(Book.class,id);
+        return book.getPerson();
+    }
     //Метод назначет человеку книгу (устанавливает айди человека в таблице книг в колонке idperson)
     @Transactional
     public void appointReader(int idBook ,Person person) {
         Session session = sessionFactory.getCurrentSession();
+        //NullPointerException - не нашёл решение
+        //************************************
+       /* person = session.get(Person.class,person.getId());
         Book book = session.get(Book.class,idBook);
-        Person person1 = session.get(Person.class, person.getId());
-        if(person1.getBooks().isEmpty()){
-            person1.setBooks(new ArrayList<>(Collections.singletonList(book)));
+        if(person.getBooks().isEmpty()){
+            person.setBooks(new ArrayList<>(Collections.singletonList(book)));
         }else {
-            person1.getBooks().add(book);
+            person.getBooks().add(book);
         }
-        book.setPerson(person);
-
+        book.setPerson(person);*/
+        //***********************************
+       /* person = session.get(Person.class,person.getId());
+        Book book = session.get(Book.class,idBook);
+        person.setBooks(new ArrayList<>(Collections.singletonList(book)));
+        book.setPerson(person);*/
+        //***********************************
+        session.createQuery("update Book set Book.person = :idPerson where Book.id = :idBook")
+                .setParameter("idPerson",person.getId())
+                .setParameter("idBook",idBook)
+                .executeUpdate();
     }
     //Метод освобождает книгу
     @Transactional

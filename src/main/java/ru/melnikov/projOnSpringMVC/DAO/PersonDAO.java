@@ -10,6 +10,7 @@ import ru.melnikov.projOnSpringMVC.models.Book;
 import ru.melnikov.projOnSpringMVC.models.Person;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Component
@@ -56,11 +57,11 @@ public class PersonDAO {
 
     //Method validator name - unique
     //*************************Hibernate не может вернуть optional - советуют использовать DTO
-    /*public Optional<Person> nameUniquePerson(String name){
+
+   /* public Optional<Person> nameUniquePerson(String name){
         Session session = sessionFactory.getCurrentSession();
-        session.createQuery("select p from Person p where p.name = name")
-        return jdbcTemplate.query("SELECT * FROM person WHERE name = ?", new Object[]{name},
-                new BeanPropertyRowMapper<>(Person.class)).stream().findAny();
+        List<Person> people = session.createQuery("select p from Person p where Person .name = name").getResultList();
+        return Optional.ofNullable(Person.toOptional(people));
     }*/
     //Метод проверяет читает ли данный человек книгу или нет
     @Transactional(readOnly = true)

@@ -26,7 +26,7 @@ public class Person {
     //Устанавиваем загрузку -EAGER тк в методе проверки на наличие книг мы используем метод getBooks()
     //и связ-е об-ты не подгрузяться нв Lazy и будут находиться в состоянии detached соотв мы не сможем получить
     //List<Books> но мы могли использовать Hibernate.initialize
-    //В spring session сразу закомитется после запроса (наверное :-))
+    //В spring session сразу закомитится после запроса (наверное :-))
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Book> books;
